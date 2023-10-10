@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">LoginScreen</string>
+    <string name="signup_switch">Sign Up if not registered</string>
+    <string name="login_switch">Login if already registered</string>
+    <string name="title">Get Started</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="or">OR</string>
+    <string name="appname">PayWal</string>
 </resources>

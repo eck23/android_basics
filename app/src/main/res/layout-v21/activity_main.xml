@@ -5,13 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_wave"
+    android:id="@+id/main_layout"
+
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="520dp"
+            android:layout_height="151dp"
+            android:height="64dp"
+            android:background="@drawable/ic_wave_4"
+            android:gravity="center" />
+
+        <!--        <TextView-->
+<!--            android:id="@+id/textView2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:textSize="24sp"-->
+<!--            android:text="@string/appname" />-->
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="300dp"
-        android:layout_height="400dp"
+        android:layout_height="450dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="425dp"
@@ -47,13 +68,14 @@
 
 <!--            username textfield-->
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:textSize="35sp"
                 android:gravity="center"
-                android:text="Get Started" />
+                android:textStyle="bold"
+                android:text="@string/title" />
 
 
 <!--            username textfield-->
@@ -69,9 +91,11 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameTextField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username" />
+                    android:hint="@string/username"
+                    android:maxLength="15"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 <!--            password textfield-->
@@ -89,14 +113,17 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordTextField"
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password" />
+                    android:inputType="textPassword"
+                    android:maxLength="15"
+                    android:hint="@string/password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/submit_button"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -104,7 +131,70 @@
                 android:layout_marginRight="50dp"
                 android:elevation="10dp"
                 android:background="@drawable/button_style"
-                android:text="Login" />
+                android:text="@string/login" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#E91E63"
+                    android:layout_marginTop="20dp" />
+
+                <TextView
+
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="8dp"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+
+                    android:text="@string/or"
+                    />
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#E91E63"
+                    android:layout_marginTop="20dp" />
+
+
+            </LinearLayout>
+
+
+
+            <TextView
+                android:id="@+id/login_sigup_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+
+                android:text="@string/signup_switch"
+                />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="411dp"
+                android:layout_height="161dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="10dp"
+                app:srcCompat="@drawable/ic_logo" />
+
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
