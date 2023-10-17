@@ -47,12 +47,8 @@ dependencies {
 
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // Okhttp3 for the POST requests
-    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
-
-    // Gson to convert raw JSON to pretty JSON
-    implementation ("com.google.code.gson:gson:2.8.9")
 
 
     testImplementation("junit:junit:4.13.2")

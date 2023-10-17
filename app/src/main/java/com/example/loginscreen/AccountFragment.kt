@@ -1,6 +1,7 @@
 package com.example.loginscreen
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.adaptors.CustomAdaptor
-import com.example.loginscreen.models.ItemsViewModel
+import com.example.loginscreen.api.APIService
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,22 +58,39 @@ class AccountFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        val data = ArrayList<ItemsViewModel>()
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModel(R.drawable.baseline_account_balance_24, "Item " + i))
-            println("Adding elements")
-        }
 
 
 
-        val adapter = CustomAdaptor(data)
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://vpic.nhtsa.dot.gov/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        // Setting the Adapter with the recyclerview
-        recyclerView.adapter = adapter
+            val service = retrofit.create(APIService::class.java)
 
-        // Inflate the layout for this fragment
+            CoroutineScope(Dispatchers.IO).launch {
+                // Do the GET request and get response
+
+                withContext(Dispatchers.Main) {
+
+                    try{
+
+                        val response = service.getCarNames()
+                        Log.d("CAR API RESPONSE :", response.carList.toString())
+
+                        val adapter = CustomAdaptor(response.carList)
+                        recyclerView.adapter = adapter
+
+
+                    }catch (e:Exception){
+
+                        Log.d("CAR API RESPONSE :",e.toString())
+
+                    }
+                }
+            }
+
+        
         return view
     }
 

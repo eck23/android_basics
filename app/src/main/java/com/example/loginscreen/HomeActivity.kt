@@ -24,14 +24,11 @@ class HomeActivity : AppCompatActivity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         var welcomeText = findViewById<TextView>(R.id.welcomeText)
+//
+//        var userData=intent.getSerializableExtra("userData") as LoginResponse
 
-        var userData=intent.getStringExtra("userData")
 
-        val gson = GsonBuilder().setPrettyPrinting().create()
-
-        val loginResponse = gson.fromJson(userData, LoginResponse::class.java)
-
-        welcomeText.setText("Hi "+ loginResponse.firstName)
+        welcomeText.setText("Hi "+ "Elson")
 
 
 

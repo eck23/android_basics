@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.R
-import com.example.loginscreen.models.ItemsViewModel
+import com.example.loginscreen.models.CarModel
 
-class CustomAdaptor (private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdaptor.ViewHolder>() {
+class CustomAdaptor (private val mList: List<CarModel>) : RecyclerView.Adapter<CustomAdaptor.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,13 +24,14 @@ class CustomAdaptor (private val mList: List<ItemsViewModel>) : RecyclerView.Ada
     // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val ItemsViewModel = mList[position]
+        val carModel = mList[position]
 
         // sets the image to the imageview from our itemHolder class
-        holder.imageView.setImageResource(ItemsViewModel.image)
+//        holder.imageView.setImageResource()
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = ItemsViewModel.text
+        holder.titleTextView.text = carModel.carManufactureName
+        holder.subTitleTextView.text =carModel.countryName
 
     }
 
@@ -42,6 +43,7 @@ class CustomAdaptor (private val mList: List<ItemsViewModel>) : RecyclerView.Ada
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val imageView: ImageView = itemView.findViewById(R.id.recyclerviewImage)
-        val textView: TextView = itemView.findViewById(R.id.recyclerviewText)
+        val titleTextView: TextView = itemView.findViewById(R.id.cardTitleText)
+        val subTitleTextView:TextView= itemView.findViewById(R.id.cardSubTitleText)
     }
 }
