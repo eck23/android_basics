@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import android.widget.ImageView
 import android.widget.LinearLayout
+
 import android.widget.TextView
 import com.example.loginscreen.models.CarModel
 
@@ -46,6 +48,7 @@ class CarDetailsFragment : Fragment() {
      override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
          val carManufactureName : TextView? = view?.findViewById(R.id.carManufactureName)
          val countryName: TextView?= view.findViewById(R.id.countryName)
          val carImage:ImageView?=view.findViewById(R.id.carImage)
@@ -68,6 +71,7 @@ class CarDetailsFragment : Fragment() {
                  vehicleTypesContainer.addView(vehicleTypeView)
              }
          }
+
 
     }
 
