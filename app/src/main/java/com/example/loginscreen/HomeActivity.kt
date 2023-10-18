@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.loginscreen.models.LoginResponse
-import com.example.loginscreen.models.accountsMap
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.GsonBuilder
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -24,31 +22,29 @@ class HomeActivity : AppCompatActivity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         var welcomeText = findViewById<TextView>(R.id.welcomeText)
-//
-//        var userData=intent.getSerializableExtra("userData") as LoginResponse
-
-
-        welcomeText.setText("Hi "+ "Elson")
 
 
 
-
-        loadFragment(AccountFragment())
+        loadFragment(HomeFragment())
+        welcomeText.setText("Cars For You")
 
         bottomNav = findViewById(R.id.bottomNav) as BottomNavigationView
         bottomNav.setOnItemSelectedListener {
 
             when (it.itemId) {
                 R.id.home -> {
-                    loadFragment(AccountFragment())
+                    loadFragment(HomeFragment())
+                    welcomeText.setText("Cars For You")
                     true
                 }
                 R.id.message -> {
                     loadFragment(ProfileFragment())
+                    welcomeText.setText("My Profile")
                     true
                 }
                 R.id.settings -> {
                     loadFragment(SettingsFragment())
+                    welcomeText.setText("Settings")
                     true
                 }
 
@@ -60,7 +56,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    private  fun loadFragment(fragment: Fragment){
+    private fun loadFragment(fragment: Fragment){
+
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container,fragment)
         transaction.commit()
