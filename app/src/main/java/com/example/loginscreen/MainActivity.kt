@@ -1,11 +1,9 @@
 package com.example.loginscreen
 
 
-import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 
 import com.example.loginscreen.api.APIService
+import com.example.loginscreen.api.RetrofitInstance
+import com.example.loginscreen.api.values.LOGIN_BASE_URL
+
 import com.example.loginscreen.models.LoginRequest
 import com.example.loginscreen.models.LoginResponse
 
@@ -23,8 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 import java.lang.Exception
 
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             } else {
 
 
-                showToast("Signup currently not available")
+                showToast(R.string.signup_unavailable.toString())
 
             }
         }
@@ -89,10 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         //Validate Credentials using Retrofit post request
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://dummyjson.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = RetrofitInstance.getInstance(LOGIN_BASE_URL)
 
         // Create Service
         val service = retrofit.create(APIService::class.java)
@@ -101,28 +97,24 @@ class MainActivity : AppCompatActivity() {
         val request= LoginRequest(username,password)
 
 
-        var progress = ProgressDialog(this);
-        progress.setMessage("Loading");
-        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
-
 
 
         CoroutineScope(Dispatchers.IO).launch {
             // Do the POST request and get response
             withContext(Dispatchers.Main) {
-                progress.show()
 
                 try{
                     val response = service.login(request)
-                    Log.d("API RESPONSE :", response.toString())
-                    gotoHomeScreen(response)
+//                    Log.d("API RESPONSE :", response.toString())
+                     storeData(response)
+                     gotoHomeScreen(response)
 
                 }catch (e:Exception){
 
-                    Log.d("API RESPONSE :",e.toString())
+//                    Log.d("API RESPONSE :",e.toString())
 
                 }
-                progress.dismiss()
+
             }
         }
 
@@ -170,6 +162,18 @@ class MainActivity : AppCompatActivity() {
         fun showToast(message: String) {
 
             Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+        }
+
+
+        fun storeData(loginResponse: LoginResponse){
+
+            val userDataSharedPref= getSharedPreferences("userData", MODE_PRIVATE)
+            val editUserData= userDataSharedPref.edit()
+
+            editUserData.putString("firstName",loginResponse.firstName)
+
+            editUserData.apply()
+
         }
 
 

@@ -1,10 +1,13 @@
 package com.example.loginscreen
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,16 +40,22 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//        val profilePic= view.findViewById<ImageView>(R.id.profileImage)
+        val displayName= view.findViewById<TextView>(R.id.displayName)
+
+        val userSharedPred= requireContext().getSharedPreferences("userData",MODE_PRIVATE)
+
+        val firstName= userSharedPred.getString("firstName","Display Name")
+
+        displayName.text= firstName
+
+//        profilePic.setImageResource(R.drawable.profile_avatar)
+    }
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ProfileFragment().apply {
@@ -56,4 +65,7 @@ class ProfileFragment : Fragment() {
                 }
             }
     }
+
+
+
 }

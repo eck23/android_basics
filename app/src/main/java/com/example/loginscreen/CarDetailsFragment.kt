@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.loginscreen.adaptors.VehicleTypeAdapter
 import com.example.loginscreen.models.CarModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,7 +33,7 @@ class CarDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            carModel = it.getSerializable(ARG_CAR_MODEL) as CarModel?
+            carModel = it.getParcelable(ARG_CAR_MODEL) as CarModel?
         }
     }
 
@@ -52,24 +55,18 @@ class CarDetailsFragment : Fragment() {
          val carManufactureName : TextView? = view?.findViewById(R.id.carManufactureName)
          val countryName: TextView?= view.findViewById(R.id.countryName)
          val carImage:ImageView?=view.findViewById(R.id.carImage)
+         val vehicleType:RecyclerView=view.findViewById(R.id.vehicleTypesContainer)
 
+         vehicleType.layoutManager = LinearLayoutManager(this.context)
 
          carModel?.let {
              carImage?.setImageResource(it.carImage)
              carManufactureName?.text = it.carManufactureName
              countryName?.text = it.countryName
 
-             val vehicleTypesContainer = view.findViewById<LinearLayout>(R.id.vehicleTypesContainer)
+             val adapter= VehicleTypeAdapter(carModel!!.vehicleType)
 
-             var i=0
-             for (vehicleType in it.vehicleType) {
-                 i++
-                 val vehicleTypeView = TextView(requireContext())
-                 vehicleTypeView.text = "$i. ${vehicleType.name}"
-                 vehicleTypeView.textSize = 16f
-                 vehicleTypeView.setPadding(0, 8, 0, 0)
-                 vehicleTypesContainer.addView(vehicleTypeView)
-             }
+             vehicleType.adapter=adapter
          }
 
 
@@ -81,7 +78,7 @@ class CarDetailsFragment : Fragment() {
         fun newInstance(carModel: CarModel) =
             CarDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_CAR_MODEL, carModel)
+                    putParcelable(ARG_CAR_MODEL, carModel)
                 }
             }
     }

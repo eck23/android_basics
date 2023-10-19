@@ -27,6 +27,8 @@
         android:text="Hi"
         android:textColor="#000"
         android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginStart="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.041"

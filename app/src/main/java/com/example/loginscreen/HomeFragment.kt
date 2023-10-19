@@ -1,7 +1,6 @@
 package com.example.loginscreen
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.adaptors.CustomAdaptor
 import com.example.loginscreen.api.APIService
+import com.example.loginscreen.api.RetrofitInstance
+import com.example.loginscreen.api.values.CAR_BASE_URL
 import com.example.loginscreen.models.CarModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 import java.lang.Exception
 import kotlin.random.Random
 
@@ -66,10 +66,7 @@ class HomeFragment : Fragment() {
 
         val progressBar =view.findViewById(R.id.progressBar) as ProgressBar
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://vpic.nhtsa.dot.gov/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = RetrofitInstance.getInstance(CAR_BASE_URL)
 
         val service = retrofit.create(APIService::class.java)
 
@@ -84,7 +81,7 @@ class HomeFragment : Fragment() {
 
 
                     val response = service.getCarNames()
-                    Log.d("CAR API RESPONSE :", response.carList.toString())
+                   // Log.d("CAR API RESPONSE :", response.carList.toString())
 
                     for (car in response.carList){
 
@@ -103,7 +100,7 @@ class HomeFragment : Fragment() {
 
                 }catch (e:Exception){
 
-                    Log.d("CAR API RESPONSE :",e.toString())
+                   // Log.d("CAR API RESPONSE :",e.toString())
 
                 }finally {
                     progressBar.visibility=View.GONE
