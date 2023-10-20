@@ -3,13 +3,13 @@ package com.example.loginscreen.models
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.io.Serializable
 
-
-data class CarList(@SerializedName("Results")val carList : List<CarModel>):Serializable
 
 @Parcelize
-data class CarModel(
+data class CarList(@SerializedName("Results")val carList : List<CarModel>):Parcelable
+
+@Parcelize
+data class CarModel (
 
     @SerializedName("Mfr_CommonName") val carManufactureName:String,
     @SerializedName("Country") val countryName:String,

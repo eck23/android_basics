@@ -1,26 +1,22 @@
 package com.example.loginscreen
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+
+import androidx.lifecycle.ViewModelProvider
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.adaptors.CustomAdaptor
-import com.example.loginscreen.api.APIService
-import com.example.loginscreen.api.RetrofitInstance
-import com.example.loginscreen.api.values.CAR_BASE_URL
+
 import com.example.loginscreen.models.CarModel
+import com.example.loginscreen.viewmodel.HomeFragmentViewModel
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-import java.lang.Exception
-import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,7 +51,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val carImages: IntArray = intArrayOf(R.drawable.car_blue,R.drawable.car_red,R.drawable.car_green)
 
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
@@ -66,47 +61,21 @@ class HomeFragment : Fragment() {
 
         val progressBar =view.findViewById(R.id.progressBar) as ProgressBar
 
-        val retrofit = RetrofitInstance.getInstance(CAR_BASE_URL)
-
-        val service = retrofit.create(APIService::class.java)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            // Do the GET request and get response
-
-            withContext(Dispatchers.Main) {
-
-                progressBar.visibility=View.VISIBLE
-
-                try{
+        val viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
 
 
-                    val response = service.getCarNames()
-                   // Log.d("CAR API RESPONSE :", response.carList.toString())
+        viewModel.carLiveData.observe(viewLifecycleOwner){
 
-                    for (car in response.carList){
+            Log.d("GET CAR DATA", it.carList.first().carManufactureName)
 
-                        car.carImage= carImages[Random.nextInt(3)]
-                    }
+            val adapter = CustomAdaptor(it.carList, { onItemClickListener(it) })
+            recyclerView.adapter = adapter
+            progressBar.visibility=View.GONE
 
-
-
-
-                    val adapter = CustomAdaptor(response.carList, { onItemClickListener(it) })
-
-                    recyclerView.adapter = adapter
-
-
-
-
-                }catch (e:Exception){
-
-                   // Log.d("CAR API RESPONSE :",e.toString())
-
-                }finally {
-                    progressBar.visibility=View.GONE
-                }
-            }
         }
+
+        viewModel.getCarData()
+
 
 
         return view

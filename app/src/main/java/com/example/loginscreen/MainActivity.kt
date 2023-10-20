@@ -4,6 +4,8 @@ package com.example.loginscreen
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import com.example.loginscreen.adaptors.CustomAdaptor
 
 import com.example.loginscreen.api.APIService
 import com.example.loginscreen.api.RetrofitInstance
@@ -18,6 +22,8 @@ import com.example.loginscreen.api.values.LOGIN_BASE_URL
 
 import com.example.loginscreen.models.LoginRequest
 import com.example.loginscreen.models.LoginResponse
+import com.example.loginscreen.viewmodel.HomeFragmentViewModel
+import com.example.loginscreen.viewmodel.LoginViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +54,27 @@ class MainActivity : AppCompatActivity() {
         val usernameTextField = findViewById<EditText>(R.id.usernameTextField)
         val passwordTextField = findViewById<EditText>(R.id.passwordTextField)
 
+        val viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+
+
+
+        //view model observer - for login validation
+        viewModel.loginResponse.observe(this){
+
+
+            if(it!=null){
+
+                Log.d("LOGIN RESPONSE", it.firstName)
+                storeData(it)
+                gotoHomeScreen(it)
+
+            }
+            else{
+                Log.d("LOGIN RESPONSE", "Error in logging")
+
+            }
+
+        }
 
 
 
@@ -58,7 +85,9 @@ class MainActivity : AppCompatActivity() {
 
             if (switch) {
 
-                validateCredentials(username = username, password = password)
+                // login validation
+                viewModel.loginUser(username,password)
+
 
             } else {
 
@@ -83,80 +112,42 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun validateCredentials(username: String, password: String) {
-
-
-        //Validate Credentials using Retrofit post request
-
-        val retrofit = RetrofitInstance.getInstance(LOGIN_BASE_URL)
-
-        // Create Service
-        val service = retrofit.create(APIService::class.java)
-
-
-        val request= LoginRequest(username,password)
 
 
 
+    fun switchLoginAndSignUp(submitButton: Button, switchTextView: TextView) {
 
-        CoroutineScope(Dispatchers.IO).launch {
-            // Do the POST request and get response
-            withContext(Dispatchers.Main) {
+        if (switch) {
 
-                try{
-                    val response = service.login(request)
-//                    Log.d("API RESPONSE :", response.toString())
-                     storeData(response)
-                     gotoHomeScreen(response)
+            submitButton.setText(R.string.signup)
+            switchTextView.setText(R.string.login_switch)
 
-                }catch (e:Exception){
+        } else {
 
-//                    Log.d("API RESPONSE :",e.toString())
-
-                }
-
-            }
+            submitButton.setText(R.string.login)
+            switchTextView.setText(R.string.signup_switch)
         }
 
-
+        switch = !switch
 
     }
 
 
+    fun gotoHomeScreen(userData: LoginResponse) {
 
-        fun switchLoginAndSignUp(submitButton: Button, switchTextView: TextView) {
+        var intent = Intent(this, HomeActivity::class.java).apply {
 
-            if (switch) {
-
-                submitButton.setText(R.string.signup)
-                switchTextView.setText(R.string.login_switch)
-
-            } else {
-
-                submitButton.setText(R.string.login)
-                switchTextView.setText(R.string.signup_switch)
-            }
-
-            switch = !switch
-
+            putExtra("userData", userData)
         }
 
+        try {
+            startActivity(intent)
 
-        fun gotoHomeScreen(userData: LoginResponse) {
+        } catch (e: ActivityNotFoundException) {
 
-            var intent = Intent(this, HomeActivity::class.java).apply {
+            showToast("Problem Navigating")
 
-                putExtra("userData", userData)
-            }
-
-            try {
-                startActivity(intent)
-
-            } catch (e: ActivityNotFoundException) {
-
-                showToast("Problem Navigating")
-
-            }
+        }
         }
 
         fun showToast(message: String) {
