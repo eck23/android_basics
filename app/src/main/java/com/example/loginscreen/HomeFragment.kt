@@ -1,11 +1,16 @@
 package com.example.loginscreen
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.Adapter
 import android.widget.ProgressBar
 
 import androidx.lifecycle.ViewModelProvider
@@ -13,9 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.adaptors.CustomAdaptor
+import com.example.loginscreen.models.CarList
 
 import com.example.loginscreen.models.CarModel
 import com.example.loginscreen.viewmodel.HomeFragmentViewModel
+import kotlinx.coroutines.coroutineScope
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,6 +40,17 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val handler = Handler(Looper.getMainLooper())
+
+    private var isScrolling : Boolean = false
+    lateinit var carData : List<CarModel>
+    lateinit var tempCarList : List<CarModel>
+    var pageSize : Int =10;
+
+
+    lateinit var adapter :CustomAdaptor
+    lateinit var recyclerView:RecyclerView
+    var progressBar:ProgressBar?=null
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -59,20 +77,51 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
 
-        val progressBar =view.findViewById(R.id.progressBar) as ProgressBar
+        progressBar =view.findViewById(R.id.progressBar) as ProgressBar
 
         val viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
+
 
 
         viewModel.carLiveData.observe(viewLifecycleOwner){
 
             Log.d("GET CAR DATA", it.carList.first().carManufactureName)
 
-            val adapter = CustomAdaptor(it.carList, { onItemClickListener(it) })
+            carData=it.carList
+            tempCarList= it.carList.subList(0,minOf(pageSize, it.carList.size-1))
+
+            adapter = CustomAdaptor(tempCarList, { onItemClickListener(it) })
             recyclerView.adapter = adapter
-            progressBar.visibility=View.GONE
+            progressBar!!.visibility=View.GONE
 
         }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                if (isScrolling && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                        isScrolling=false
+                        loadMoreData()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if(newState== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+
+                    isScrolling=true
+                }
+            }
+        })
+
 
         viewModel.getCarData()
 
@@ -81,16 +130,33 @@ class HomeFragment : Fragment() {
         return view
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun loadMoreData() {
+
+
+        val nextPageStart = tempCarList.size
+        val nextPageEnd = minOf(nextPageStart + pageSize,carData.size)
+
+        progressBar!!.visibility=View.VISIBLE
+
+        handler.postDelayed({
+//            tempCarList.addAll(carData.subList(nextPageStart, nextPageEnd))
+            tempCarList += carData.subList(nextPageStart, nextPageEnd)
+
+            Log.d("LIST UPDATE",tempCarList.size.toString())
+            adapter.setData(tempCarList)
+            adapter.notifyDataSetChanged()
+            progressBar!!.visibility=View.GONE
+
+        }, 5000)
+
+
+    }
+
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AccountFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             HomeFragment().apply {

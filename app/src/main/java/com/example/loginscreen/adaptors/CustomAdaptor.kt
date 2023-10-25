@@ -1,5 +1,6 @@
 package com.example.loginscreen.adaptors
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.loginscreen.R
 import com.example.loginscreen.models.CarModel
 
-class CustomAdaptor (private val mList: List<CarModel>,private val clickListener: (carModel:CarModel)->Unit) : RecyclerView.Adapter<CustomAdaptor.ViewHolder>() {
+class CustomAdaptor (private var mList: List<CarModel>,private val clickListener: (carModel:CarModel)->Unit) : RecyclerView.Adapter<CustomAdaptor.ViewHolder>() {
 
 
 
@@ -39,6 +40,8 @@ class CustomAdaptor (private val mList: List<CarModel>,private val clickListener
 
         val carModel = mList[position]
 
+        Log.d("ADAPTER UPDATE", mList.size.toString())
+
         // sets the image to the imageview from our itemHolder class
 //        holder.imageView.setImageResource()
 
@@ -60,6 +63,10 @@ class CustomAdaptor (private val mList: List<CarModel>,private val clickListener
         return mList.size
     }
 
+
+    public fun setData(newData: List<CarModel>) {
+        mList=newData
+    }
 
 
     // Holds the views for adding it to image and text
